@@ -20,6 +20,13 @@ class Complex {
     double im();
     double mag(); 
     double phase();
+
+    // Operators ??
+    Complex operator+ (const Complex& rhs) const;
+    Complex operator- (const Complex& rhs) const;
+    Complex operator* (const Complex& rhs) const;
+    Complex operator/ (const Complex& rhs) const;
+  
   
     void reset();
     void print();

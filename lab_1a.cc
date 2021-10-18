@@ -45,7 +45,40 @@ double Complex::phase() {
   if(x_<0){
 
     return atan(y_/x_)+3.1416;}
-    
+}
+
+//Operators
+
+Complex Complex::operator+( const Complex& rhs) const {
+
+  double re = x_ + rhs.x_;
+  double im = y_ + rhs.y_;
+
+  return Complex(re,im);
+}
+
+Complex Complex::operator-( const Complex& rhs) const {
+
+  double re = x_ - rhs.x_;
+  double im = y_ - rhs.y_;
+
+  return Complex(re,im);
+}
+
+Complex Complex::operator*( const Complex& rhs) const {
+
+  double re = x_ * rhs.x_;
+  double im = y_ * rhs.y_;
+
+  return Complex(re,im);
+}
+
+Complex Complex::operator/( const Complex& rhs) const {
+
+  double re = x_ / rhs.x_;
+  double im = y_ / rhs.y_;
+
+  return Complex(re,im);
 }
 
 void Complex::reset(){
@@ -55,6 +88,5 @@ void Complex::reset(){
 
 void Complex::print(){
   cout << "Complex Number: "<< x_ <<"+"<< y_ << "i" << endl;
-  cout << " Magnitude: "<< Complex.mag() <<" Phase"<< Complex.phase() << endl;
 }
   
