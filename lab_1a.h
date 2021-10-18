@@ -26,7 +26,12 @@ class Complex {
     Complex operator- (const Complex& rhs) const;
     Complex operator* (const Complex& rhs) const;
     Complex operator/ (const Complex& rhs) const;
-  
+    Complex operator= (const Complex& rhs) const;
+    Complex operator+= (const Complex& rhs) const;
+    Complex operator-= (const Complex& rhs) const;
+    Complex operator*= (const Complex& rhs) const;
+    Complex operator/= (const Complex& rhs) const;
+
   
     void reset();
     void print();
