@@ -81,6 +81,46 @@ Complex Complex::operator/( const Complex& rhs) const {
   return Complex(re,im);
 }
 
+//operators of assigment
+
+//const Complex& Complex::operator+=(const Complex& rhs) {
+void Complex::operator+=(const Complex& rhs) {
+    x_ += rhs.x_;
+    y_ += rhs.y_;
+    //retun *this; ho notato che si può fare anche così, non so cosa cambia al caso con *this
+}
+
+const Complex& Complex::operator-=(const Complex& rhs) {
+    x_ -= rhs.x_;
+    y_ -= rhs.y_;
+    return *this;
+}
+
+const Complex& Complex::operator*=(const Complex& rhs) {
+    x_ *= rhs.x_;
+    y_ *= rhs.y_;
+    return *this;
+}
+
+const Complex& Complex::operator/=(const Complex& rhs) {
+    x_ /= rhs.x_;
+    y_ /= rhs.y_;
+    return *this;
+}
+
+//molitplication by a scalar
+
+//moltiplication of form Complex*double
+Complex Complex::operator*(const double& rhs) const {
+    return Complex(rhs * x_, rhs * y_);
+}
+
+//Moltiplication of form double*Complex
+Complex operator*(const double& lhs, const Complex& rhs) {
+    return Complex(lhs * rhs.x_, lhs * rhs.y_);
+}
+
+
 void Complex::reset(){
   x_=0;
   y_=0;
