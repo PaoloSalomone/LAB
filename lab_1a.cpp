@@ -24,7 +24,5 @@ int main() {
   // z.setIm(2);
   //z.print();
 
-  //Provo a fare una modifica qualsiasi, ovvero questo commento
-
   return 0;
 }
