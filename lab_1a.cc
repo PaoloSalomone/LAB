@@ -6,7 +6,7 @@
 using std::cout;
 using std::endl;
 
-// Constructors prova
+// Constructors 
 
 Complex::Complex() {
   x_=0;
