@@ -54,7 +54,11 @@ double vector::theta() { return atan(sqrt(x_ * x_ + y_ * y_) / z_); }
 double vector::phi() { return atan(y_ / x_); }
 
 
-//
+// Functions (?)
+
+double vector::angle(const vector& rhs) {
+    return acos(vector::scalar(rhs));
+}
 
 void vector::print() {
     std::cout << "Vector: x=" << x_ << "\t y=" << y_ << "\t z=" << z_ << std::endl;

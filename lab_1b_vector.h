@@ -25,9 +25,10 @@ class vector
     double phi();
 
 
-    //
+    // Functions (?)
     void reset();
     void print();
+    double angle(const vector& rhs);
 
 
     //operator
