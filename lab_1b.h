@@ -5,7 +5,7 @@ using namespace std;
 
 class Vector3D {
   public:
-    // constructors
+    // constructors  (seconda prova di modifica sul ramo)
     Vector3D();
     Vector3D(double x,double y,double z);
     Vector3D(const Vector3D& Vector3D);
@@ -26,7 +26,7 @@ class Vector3D {
 
 
     // Operators ??
-    Vector3D operator+ (const Vector3D& rhs) const;
+    /*Vector3D operator+ (const Vector3D& rhs) const;
     Vector3D operator- (const Vector3D& rhs) const;
     Vector3D operator* (const Vector3D& rhs) const;
     Vector3D operator/ (const Vector3D& rhs) const;
@@ -34,7 +34,7 @@ class Vector3D {
     Vector3D operator+= (const Vector3D& rhs) const;
     Vector3D operator-= (const Vector3D& rhs) const;
     Vector3D operator*= (const Vector3D& rhs) const;
-    Vector3D operator/= (const Vector3D& rhs) const;
+    Vector3D operator/= (const Vector3D& rhs) const;   ******** li ho commentati per fare una prova con i rami *********/  
   
     // operators of assigment
 
