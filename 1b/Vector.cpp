@@ -1,6 +1,6 @@
 // Lab_1b_main.cpp
 
-#include "lab_1b.h"
+#include "Vector.h"
 
 int main() {
 
