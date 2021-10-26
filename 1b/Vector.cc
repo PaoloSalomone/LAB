@@ -15,7 +15,8 @@ vector::vector() {
 vector::vector(double x, double y, double z, const char type) {
 
     if (type == *"polar") {
-        std::cout << "vector constructor called for r=" << x << "\t theta=" << z << "\t phi=" << y << std::endl;
+        std::cout << "vector constructor called for r=" << x << "\t theta=" << z << "\t phi=" << y << std::endl;   // Non so se è conveniente stampare le coordinate ogni volta che il vettore viene definito, se giri vector.cpp per esempio ti stampa le coordinate mentre esegue la funzione angle().
+        
         x_ = x * sin(z) * cos(y);
         y_ = x * sin(z) * sin(y);
         z_ = x * cos(z);
