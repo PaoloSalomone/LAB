@@ -55,7 +55,7 @@ public:
     vector operator/ (const double& rhs) const;
 
     //angle
-    friend double angle(vector vector1, vector vector2);
+    friend double angle(vector& vector1, vector& vector2);
 
 private:
     double x_, y_, z_;
