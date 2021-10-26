@@ -107,4 +107,4 @@ vector vector::operator/(const double& rhs) const { return vector(x_ / rhs, y_ /
 
 
 //angle
-double angle(vector vector1, vector vector2) { return acos(vector1.scalar(vector2) / (vector1.mag() * vector2.mag())); }
+double angle(vector& vector1, vector& vector2) { return acos(vector1.scalar(vector2) / (vector1.mag() * vector2.mag())); }
