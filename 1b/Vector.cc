@@ -1,4 +1,4 @@
-#include "vector.h"
+#include "Vector.h"
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -20,12 +20,16 @@ vector::vector(double x, double y, double z, const char type) {
         y_ = x * sin(z) * sin(y);
         z_ = x * cos(z);
     }
-
-    else {
+    
+    if (type == *"cart") {
         std::cout << "vector constructor called for x=" << x << "\t y=" << y << "\t z=" << z << std::endl;
         x_ = x;
         y_ = y;
         z_ = z;
+    }
+
+    else {
+        std::cout << "vector constructor needs polar or cart as arguments" << std::endl;
     }
 }
 
@@ -77,11 +81,14 @@ vector vector::vectorial(const vector& Vector) const { return vector(y_ * Vector
 vector& vector::operator+=(const vector& rhs) {
     x_ += rhs.x_;
     y_ += rhs.y_;
+    z_ += rhs.z_;
+
     return *this;
 }
 vector& vector::operator-=(const vector& rhs) {
     x_ -= rhs.x_;
     y_ -= rhs.y_;
+    z_ -= rhs.z_;
     return *this;
 }
 

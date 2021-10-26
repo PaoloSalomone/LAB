@@ -1,6 +1,6 @@
-// Lab_1a.cpp
+// Complex.cpp
 
-#include "lab_1a.h"
+#include "Complex.h"
 
 int main() {
 

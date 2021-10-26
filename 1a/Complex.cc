@@ -1,5 +1,5 @@
-// Lab_1a.cc
-#include "lab_1a.h"
+// Complex.cc
+#include "Complex.h"
 
 #include <cmath>
 #include <iostream>
