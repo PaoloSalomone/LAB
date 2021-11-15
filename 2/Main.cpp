@@ -4,11 +4,11 @@
 //ROOT header
 #include "TRandom.h"
 #include "TH1.h"
-#include "THStack.h"
 #include "TTree.h"
 #include "TCanvas.h"
 #include "TLorentzVector.h"
 #include "TVector.h"
+#include "THStack.h"
 
 //CUSTOM header
 #include "Datum.h"
@@ -165,7 +165,6 @@ int main() {
 		int j = 0;
 		for (std::vector<TLorentzVector>::const_iterator it = p4_v.begin(); it != p4_v.end(); ++it) {
 
-			std::cout << it->X() << "it->X" << std::endl;
 			//creating measurments
 			datum_x.SetValue(gen->Gaus(it->X(), it->X()*resol[1])); datum_x.SetError(resol[1]);
 			datum_y.SetValue(gen->Gaus(it->Y(), it->X()*resol[1])); datum_y.SetError(resol[1]);
@@ -181,7 +180,6 @@ int main() {
 			if (j == 1) {
 				p4 += TLorentzVector(datum_x.GetValue(), datum_y.GetValue(), datum_z.GetValue(), datum_t.GetValue());
 				MimKP = p4.Mag();
-				std::cout << p4.Mag() << "p4.Mag" << std::endl;
 				HMimKP.Fill(MimKP);
 			}
 			j++;
@@ -207,15 +205,17 @@ int main() {
 
 	//invarinat smeared mass of Kaon+Pion
 	HMimKP.GetXaxis()->SetTitle("Invariant smeared mass of Kaon+Pion [MeV]");
+	HMimKP.SetLineColor(kRed);
 	HMimKP.Draw();
 	//save pdf file
 	Canv.SaveAs("./measured-mass.pdf");
 
-        //INVARIANT MASS HISTOGRAMS
-	THStack *HIMKP = new THStack ("hist_T&M_invariant_mass_K&P","Truen and Measured Invariant mass K + P ",nbins,0.5 * m_B, 1.5 * m_B);
-	HIMKP.Add(HimKP);
-	HIMKP.Add(HMimKP);
-	HIMKP.Draw();*/
+
+	//INVARIANT MASS HISTOGRAMS
+	THStack* HIMKP = new THStack("hist_T&M_invariant_mass_K&P", "Truen and Measured Invariant mass K + P ");
+	HIMKP->Add(&HimKP);
+	HIMKP->Add(&HMimKP);
+	HIMKP->Draw();
 	//save pdf file
 	Canv.SaveAs("./invariant-mass.pdf");
 
