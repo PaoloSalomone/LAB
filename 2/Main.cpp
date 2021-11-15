@@ -56,7 +56,13 @@ int main() {
 	//histogram of Kaon+Pion invariant mass
 	double imKP;
 	TH1F HimKP("hist_inv_mass_KP", "Distribution of invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
+	
+	
+	//histogram of Kaon+Pion measured invariant mass
+	double MimKP;
+	TH1F HMimKP("hist_measured_inv_mass_KP", "Distribution of Measured invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
 
+	
 	//histogram of Kaon+Pion invariant mass
 	double angleKP;
 	TH1F HangleKP("hist_angle_KP", "Distribution of angle between Kaon and Pion", nbins, 0, 2*3.14);
@@ -170,6 +176,24 @@ int main() {
 	HimKP.Draw();
 	//save pdf file
 	Canv.SaveAs("./true-mass.pdf");
+	
+	// MEASURED invariant mass Kaon + Pion (3% Resolution)
+        /*HMimKP.GetXaxis()->SetTitle("Measured invariatn mass of Kaon + Pion [Mev]");
+	HMimKP.SetFillColor(kBlue);
+	HMimKP.Draw();
+
+	//save pdf file
+	//Canv.SaveAs("./measured-mass.pdf")
+
+	//INVARIANT MASS HISTOGRAMS
+	THStack *HIMKP = new THStack ("hist_T&M_invariant_mass_K&P","Truen and Measured Invariant mass K + P ",nbins,0.5 * m_B, 1.5 * m_B);
+	HIMKP.Add(HimKP);
+	HIMKP.Add(HMimKP);
+	HIMKP.Draw();*/
+	//save pdf file
+	//Canv.SaveAs("./invariant-mass.pdf")
+
+
 
 	//angle between Kaon nad Pion
 	HangleKP.GetXaxis()->SetTitle("Angle between Kaon and Pion [rad]");
