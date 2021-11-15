@@ -38,7 +38,7 @@ int main() {
 
 	//Gaussian resolution
 	std::vector<double> resol;
-	resol.push_back(0.1); resol.push_back(0.2); resol.push_back(0.3); resol.push_back(0.5);
+	resol.push_back(0.01); resol.push_back(0.03); resol.push_back(0.05); resol.push_back(0.1);
 
 
 	// number of simulated measurements
@@ -53,16 +53,14 @@ int main() {
 	//number of bins in histogram
 	int nbins = nmeas;
 
-	//histogram of Kaon+Pion invariant mass
+	//histogram of Kaon+Pion not-smeared invariant mass
 	double imKP;
 	TH1F HimKP("hist_inv_mass_KP", "Distribution of invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
-	
-	
-	//histogram of Kaon+Pion measured invariant mass
-	double MimKP;
-	TH1F HMimKP("hist_measured_inv_mass_KP", "Distribution of Measured invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
 
-	
+	//histogram of Kaon+Pion smeared invariant mass
+	double MimKP;
+	TH1F HMimKP("hist_inv_smeared_mass_KP", "Distribution of invariant smeared mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
+
 	//histogram of Kaon+Pion invariant mass
 	double angleKP;
 	TH1F HangleKP("hist_angle_KP", "Distribution of angle between Kaon and Pion", nbins, 0, 2*3.14);
@@ -77,7 +75,7 @@ int main() {
 	//component of a generic measure (dummy variable)
 	Datum datum_x; Datum datum_y; Datum datum_z; Datum datum_t;
 
-
+	// All this TTree are useless for what the program does... here just in case one wish to save the result on ROOT files
 	//Tree of COM momenta
 	TTree* COMtree = new TTree("COM_momenta_tree", "tree containing COM momenta");
 	COMtree->Branch("COMp4_P", &p4_P, "COM momentum of pion/D");
@@ -115,6 +113,15 @@ int main() {
 
 	meas.push_back(mLABpion); meas.push_back(mLABkaon); meas.push_back(mLABBmeson); //the order P-K-B matters!
 
+	//This Tree is needed for compare the smearing
+	/*TTree* sTree = new TTree("smearingTree", "Tree for comparing smearing");
+	mLABBmeson->Branch("meas", &datum_x, "LAB measured p_x");
+	mLABBmeson->Branch("meas", &datum_y, "LAB measured p_y");
+	mLABBmeson->Branch("meas", &datum_z, "LAB measured p_z");
+	mLABBmeson->Branch("meas", &datum_t, "LAB measured p_t");*/
+
+
+	//loop for simulated measurement
 	for (int i = 0; i < nmeas; i++) {
 		
 		//generating random vector of magnitude p
@@ -150,20 +157,27 @@ int main() {
 		angleKP = p4_P.Angle(v3);
 		HangleKP.Fill(angleKP);
 
+		//loop over the smearing
 		//measurement
 		int j = 0;
 		for (std::vector<TLorentzVector>::const_iterator it = p4_v.begin(); it != p4_v.end(); ++it) {
 
-			//creating measurments for pion
-			datum_x.SetValue(it->X()); datum_x.SetError(it->X()*resol[1]);
-			datum_y.SetValue(it->Y()); datum_y.SetError(it->Y()* resol[1]);
-			datum_z.SetValue(it->Z()); datum_z.SetError(it->Z()* resol[1]);
-			datum_t.SetValue(it->T()); datum_z.SetError(it->T()* resol[1]);
+			//creating measurments
+			datum_x.SetValue(gen->Gaus(it->X(), it->X()*resol[1])); datum_x.SetError(resol[1]);
+			datum_y.SetValue(gen->Gaus(it->Y(), it->X()*resol[1])); datum_y.SetError(resol[1]);
+			datum_z.SetValue(gen->Gaus(it->Z(), it->X()*resol[1])); datum_z.SetError(resol[1]);
+			datum_t.SetValue(gen->Gaus(it->T(), it->X()*resol[1])); datum_z.SetError(resol[1]);
 
 			//filling respectively tree
 			meas[j]->Fill();
 			j++;
-
+			
+			//filling the istograms of smeared invarianr mass but only for resol=0.03
+			if (j = 1) {
+				p4.SetXYZT(datum_x.GetValue(), datum_y.GetValue(), datum_z.GetValue(), datum_t.GetValue());
+				MimKP = p4.Mag();
+				HMimKP.Fill(MimKP);
+			}
 		}
 
 	}
@@ -171,35 +185,24 @@ int main() {
 	//plotting histogram
 	TCanvas Canv("Canv", "Canvas for plotting", 1280, 1024);
 	
-	//invarinat mass of Kaon+Pion
+	//invarinat not smeared mass of Kaon+Pion
 	HimKP.GetXaxis()->SetTitle("Invariant mass of Kaon+Pion [MeV]");
 	HimKP.Draw();
 	//save pdf file
 	Canv.SaveAs("./true-mass.pdf");
-	
-	// MEASURED invariant mass Kaon + Pion (3% Resolution)
-        /*HMimKP.GetXaxis()->SetTitle("Measured invariatn mass of Kaon + Pion [Mev]");
-	HMimKP.SetFillColor(kBlue);
-	HMimKP.Draw();
-
-	//save pdf file
-	//Canv.SaveAs("./measured-mass.pdf")
-
-	//INVARIANT MASS HISTOGRAMS
-	THStack *HIMKP = new THStack ("hist_T&M_invariant_mass_K&P","Truen and Measured Invariant mass K + P ",nbins,0.5 * m_B, 1.5 * m_B);
-	HIMKP.Add(HimKP);
-	HIMKP.Add(HMimKP);
-	HIMKP.Draw();*/
-	//save pdf file
-	//Canv.SaveAs("./invariant-mass.pdf")
-
-
 
 	//angle between Kaon nad Pion
 	HangleKP.GetXaxis()->SetTitle("Angle between Kaon and Pion [rad]");
 	HangleKP.Draw();
 	//save pdf file
 	Canv.SaveAs("./opening-angle.pdf");
+
+	//invarinat smeared mass of Kaon+Pion
+	HMimKP.GetXaxis()->SetTitle("Invariant smeared mass of Kaon+Pion [MeV]");
+	HMimKP.Draw();
+	//save pdf file
+	Canv.SaveAs("./measured-mass.pdf");
+
 
 	// Clean up
 	delete gen;
