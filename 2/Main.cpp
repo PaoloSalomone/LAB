@@ -148,7 +148,7 @@ int main() {
 	//save pdf file
 	Canv.SaveAs("./true-mass.pdf");
 
-	//angle between Kaon nad Pion
+	//angle between Kaon and Pion
 	HangleKP.GetXaxis()->SetTitle("Angle between Kaon and Pion [rad]");
 	HangleKP.Draw();
 	//save pdf file
