@@ -4,6 +4,7 @@
 //ROOT header
 #include "TRandom.h"
 #include "TH1.h"
+#include "THStack.h"
 #include "TTree.h"
 #include "TCanvas.h"
 #include "TLorentzVector.h"
