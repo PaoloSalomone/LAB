@@ -61,11 +61,11 @@ int main() {
 	double imKP;
 	TH1F HimKP("hist_inv_mass_KP", "Distribution of invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
 
-    //histogram of Kaon+Pion measured invariant mass
+        //histogram of Kaon+Pion measured invariant mass
 	double MimKP;
 	TH1F HMimKP("hist_measured_inv_mass_KP", "Distribution of Measured invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
 
-	//histogram of Kaon+Pion invariant mass
+	//histogram of Kaon+Pion angle
 	double angleKP;
 	TH1F HangleKP("hist_angle_KP", "Distribution of angle between Kaon and Pion", nbins, 0, 2*3.14);
 
