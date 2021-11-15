@@ -145,8 +145,13 @@ int main() {
 	//invarinat mass of Kaon+Pion
 	HimKP.GetXaxis()->SetTitle("Invariant mass of Kaon+Pion [MeV]");
 	HimKP.Draw();
+
 	//save pdf file
 	Canv.SaveAs("./true-mass.pdf");
+
+    //invariant mass of measured Kaon + Pion (3% Resolution)
+    /*HMimKP.GetXaxis()->SetTitle("Measured invariatn mass of Kaon + Pion [Mev]");
+	HMimKP.Draw();*/
 
 	//angle between Kaon and Pion
 	HangleKP.GetXaxis()->SetTitle("Angle between Kaon and Pion [rad]");
