@@ -17,7 +17,6 @@ int main() {
 	//c=1: mass, momentum, energy in MeV; B meson decay in Kaon+Pion
 	
 
-
 	//mass of particles, P=pion B=Bmeson K=Kaon
 	const double m_P = 140., m_B = 5279., m_K = 500.;
 
@@ -32,16 +31,14 @@ int main() {
 	//particles four-momenta
 	TLorentzVector p4_P, p4_B, p4_K;
 
+	//vector of four momenta
+	std::vector<TLorentzVector> p4_v;
+	p4_v.push_back(p4_P); p4_v.push_back(p4_K); p4_v.push_back(p4_B);
 
 
 	//Gaussian resolution
 	std::vector<double> resol;
-
-	//measure
-	std::vector<Datum> meas;
-	Datum datum_p4_K;
-	Datum datum_p4_P;
-	Datum datum_p4_B;
+	resol.push_back(0.1); resol.push_back(0.2); resol.push_back(0.3); resol.push_back(0.5);
 
 
 	// number of simulated measurements
@@ -53,7 +50,6 @@ int main() {
 	gen->SetSeed(0);
 
 
-
 	//number of bins in histogram
 	int nbins = nmeas;
 
@@ -61,14 +57,9 @@ int main() {
 	double imKP;
 	TH1F HimKP("hist_inv_mass_KP", "Distribution of invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
 
-        //histogram of Kaon+Pion measured invariant mass
-	double MimKP;
-	TH1F HMimKP("hist_measured_inv_mass_KP", "Distribution of Measured invariant mass of Kaon+Pion", nbins, 0.5 * m_B, 1.5 * m_B);
-
-	//histogram of Kaon+Pion angle
+	//histogram of Kaon+Pion invariant mass
 	double angleKP;
 	TH1F HangleKP("hist_angle_KP", "Distribution of angle between Kaon and Pion", nbins, 0, 2*3.14);
-
 
 
 	//generic three vector (dummy variable)
@@ -77,7 +68,8 @@ int main() {
 	TLorentzVector p4;
 	//component of generic four momentum (dummy variable)
 	double px, py, pz, E;
-
+	//component of a generic measure (dummy variable)
+	Datum datum_x; Datum datum_y; Datum datum_z; Datum datum_t;
 
 
 	//Tree of COM momenta
@@ -92,11 +84,30 @@ int main() {
 	LABtree->Branch("LABp4_K", &p4_K, "LAB momentum of Kaon/D");
 	LABtree->Branch("LABp4_B", &p4_B, "LAB momentum of B meson/D");
 
-	/*
-	TTree* mLABtree = new TTree("LAB_measured_momenta_tree", "tree containing LAB measured momenta");
-	mLABtree->Branch("meas", &datum_p4_P, "LAB measured momentum");
-	mLABtree->Branch("meas", &datum_p4_K, "LAB measured momentum");
-	mLABtree->Branch("meas", &datum_p4_B, "LAB measured momentum");*/
+	//measure
+	std::vector<TTree*> meas;
+
+	//Tree of LAB measurement momenta
+	//Pion
+	TTree* mLABpion = new TTree("LAB_measured_momenta_tree", "tree containing LAB measured momenta");
+	mLABpion->Branch("meas", &datum_x, "LAB measured p_x");
+	mLABpion->Branch("meas", &datum_y, "LAB measured p_y");
+	mLABpion->Branch("meas", &datum_z, "LAB measured p_z");
+	mLABpion->Branch("meas", &datum_t, "LAB measured p_t");
+	//Kaon
+	TTree* mLABkaon = new TTree("LAB_measured_momenta_tree", "tree containing LAB measured momenta");
+	mLABkaon->Branch("meas", &datum_x, "LAB measured p_x");
+	mLABkaon->Branch("meas", &datum_y, "LAB measured p_y");
+	mLABkaon->Branch("meas", &datum_z, "LAB measured p_z");
+	mLABkaon->Branch("meas", &datum_t, "LAB measured p_t");
+	//Bmeson
+	TTree* mLABBmeson = new TTree("LAB_measured_momenta_tree", "tree containing LAB measured momenta");
+	mLABBmeson->Branch("meas", &datum_x, "LAB measured p_x");
+	mLABBmeson->Branch("meas", &datum_y, "LAB measured p_y");
+	mLABBmeson->Branch("meas", &datum_z, "LAB measured p_z");
+	mLABBmeson->Branch("meas", &datum_t, "LAB measured p_t");
+
+	meas.push_back(mLABpion); meas.push_back(mLABkaon); meas.push_back(mLABBmeson); //the order P-K-B matters!
 
 	for (int i = 0; i < nmeas; i++) {
 		
@@ -123,14 +134,6 @@ int main() {
 		//saving LAB momenta in LABtree
 		LABtree->Fill();
 
-		//creating measurments
-		/*datum_p4_K.SetValue();
-		datum_p4_P.SetValue();
-		datum_p4_B.SetValue();
-		datum_p4_K.SetError();
-		datum_p4_p.SetError();
-		datum_p4_B.SetError();*/
-
 		//histogram of Kaon+Pion invariant mass
 		p4 = p4_P + p4_K;
 		imKP = p4.Mag();
@@ -141,6 +144,22 @@ int main() {
 		angleKP = p4_P.Angle(v3);
 		HangleKP.Fill(angleKP);
 
+		//measurement
+		int j = 0;
+		for (std::vector<TLorentzVector>::const_iterator it = p4_v.begin(); it != p4_v.end(); ++it) {
+
+			//creating measurments for pion
+			datum_x.SetValue(it->X()); datum_x.SetError(it->X()*resol[1]);
+			datum_y.SetValue(it->Y()); datum_y.SetError(it->Y()* resol[1]);
+			datum_z.SetValue(it->Z()); datum_z.SetError(it->Z()* resol[1]);
+			datum_t.SetValue(it->T()); datum_z.SetError(it->T()* resol[1]);
+
+			//filling respectively tree
+			meas[j]->Fill();
+			j++;
+
+		}
+
 	}
 
 	//plotting histogram
@@ -148,31 +167,11 @@ int main() {
 	
 	//invarinat mass of Kaon+Pion
 	HimKP.GetXaxis()->SetTitle("Invariant mass of Kaon+Pion [MeV]");
-	HimKP.SetFillColor(kRed);
 	HimKP.Draw();
-
 	//save pdf file
 	Canv.SaveAs("./true-mass.pdf");
 
-    // MEASURED invariant mass Kaon + Pion (3% Resolution)
-    /*HMimKP.GetXaxis()->SetTitle("Measured invariatn mass of Kaon + Pion [Mev]");
-	HMimKP.SetFillColor(kBlue);
-	HMimKP.Draw();
-
-	//save pdf file
-	//Canv.SaveAs("./measured-mass.pdf")
-
-	//INVARIANT MASS HISTOGRAMS
-	THStack *HIMKP = new THStack ("hist_T&M_invariant_mass_K&P","Truen and Measured Invariant mass K + P ",nbins,0.5 * m_B, 1.5 * m_B);
-	HIMKP.Add(HimKP);
-	HIMKP.Add(HMimKP);
-	HIMKP.Draw();*/
-	//save pdf file
-	//Canv.SaveAs("./invariant-mass.pdf")
-
-
-
-	//angle between Kaon and Pion
+	//angle between Kaon nad Pion
 	HangleKP.GetXaxis()->SetTitle("Angle between Kaon and Pion [rad]");
 	HangleKP.Draw();
 	//save pdf file
@@ -182,6 +181,9 @@ int main() {
 	delete gen;
 	delete COMtree;
 	delete LABtree;
+	delete mLABpion;
+	delete mLABkaon;
+	delete mLABBmeson;
 
 	return 0;
 };
