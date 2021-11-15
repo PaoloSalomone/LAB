@@ -203,11 +203,11 @@ int main() {
 	//save pdf file
 	Canv.SaveAs("./measured-mass.pdf");
  
-        //INVARIANT MASS HISTOGRAMS
+    //INVARIANT MASS HISTOGRAMS
 	THStack *HIMKP = new THStack ("hist_T&M_invariant_mass_K&P","Truen and Measured Invariant mass K + P ",nbins,0.5 * m_B, 1.5 * m_B);
 	HIMKP.Add(HimKP);
 	HIMKP.Add(HMimKP);
-	HIMKP.Draw();*/
+	HIMKP.Draw();
 		
 	//save pdf file
 	Canv.SaveAs("./invariant-mass.pdf")
