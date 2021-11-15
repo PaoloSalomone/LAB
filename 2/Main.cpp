@@ -33,8 +33,6 @@ int main() {
 
 	//vector of four momenta
 	std::vector<TLorentzVector> p4_v;
-	p4_v.push_back(p4_P); p4_v.push_back(p4_K); p4_v.push_back(p4_B);
-
 
 	//Gaussian resolution
 	std::vector<double> resol;
@@ -74,6 +72,7 @@ int main() {
 	double px, py, pz, E;
 	//component of a generic measure (dummy variable)
 	Datum datum_x; Datum datum_y; Datum datum_z; Datum datum_t;
+
 
 	// All this TTree are useless for what the program does... here just in case one wish to save the result on ROOT files
 	//Tree of COM momenta
@@ -158,10 +157,14 @@ int main() {
 		HangleKP.Fill(angleKP);
 
 		//loop over the smearing
+		//for...
+
 		//measurement
+		p4_v.push_back(p4_P); p4_v.push_back(p4_K); p4_v.push_back(p4_B);
 		int j = 0;
 		for (std::vector<TLorentzVector>::const_iterator it = p4_v.begin(); it != p4_v.end(); ++it) {
 
+			std::cout << it->X() << "it->X" << std::endl;
 			//creating measurments
 			datum_x.SetValue(gen->Gaus(it->X(), it->X()*resol[1])); datum_x.SetError(resol[1]);
 			datum_y.SetValue(gen->Gaus(it->Y(), it->X()*resol[1])); datum_y.SetError(resol[1]);
@@ -170,16 +173,20 @@ int main() {
 
 			//filling respectively tree
 			meas[j]->Fill();
-			j++;
 			
-			//filling the istograms of smeared invarianr mass but only for resol=0.03
-			if (j = 1) {
+			if (j == 0 ) {
 				p4.SetXYZT(datum_x.GetValue(), datum_y.GetValue(), datum_z.GetValue(), datum_t.GetValue());
+			}
+			if (j == 1) {
+				p4 += TLorentzVector(datum_x.GetValue(), datum_y.GetValue(), datum_z.GetValue(), datum_t.GetValue());
 				MimKP = p4.Mag();
+				std::cout << p4.Mag() << "p4.Mag" << std::endl;
 				HMimKP.Fill(MimKP);
 			}
+			j++;
 		}
 
+		p4_v.clear();
 	}
 
 	//plotting histogram
@@ -202,15 +209,7 @@ int main() {
 	HMimKP.Draw();
 	//save pdf file
 	Canv.SaveAs("./measured-mass.pdf");
- 
-    //INVARIANT MASS HISTOGRAMS
-	THStack *HIMKP = new THStack ("hist_T&M_invariant_mass_K&P","Truen and Measured Invariant mass K + P ",nbins,0.5 * m_B, 1.5 * m_B);
-	HIMKP.Add(HimKP);
-	HIMKP.Add(HMimKP);
-	HIMKP.Draw();
-		
-	//save pdf file
-	Canv.SaveAs("./invariant-mass.pdf")
+
 
 	// Clean up
 	delete gen;
